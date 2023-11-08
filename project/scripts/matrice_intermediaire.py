@@ -64,7 +64,7 @@ class MatriceIntermaidiaire:
         for i in range(len(self.content)):
             self.content[i][numberRow] = function(self.content[i][numberRow]) 
     
-    def echangeRow(self,row1, row2):
+    def echangeColumn(self,row1, row2):
         tmp = self.header.header[row1]
         self.header.header[row1] = self.header.header[row2]
         self.header.header[row2] = tmp
@@ -78,11 +78,41 @@ class MatriceIntermaidiaire:
             print("error")
             quit()
         self.content.insert(index,subTab)
+
+    def insertColumn(self, index, name, type):
+        self.header.header.insert(index,(name,type))
+        for i in self.content:
+            i.insert(index,"None")
     
-    def deleteRow(self,index):
+    def deleteColumn(self,index):
         self.header.header.pop(index)
         for i in range(len(self.content)):
             self.content[i].pop(index)
+
+    def getSqlInsert(self, nameTable ):
+        string1 = ""
+        string2 = ""
+        for i in range(len(self.header.header)):
+            string1=string1+self.header.header[i][0]
+            if(i<len(self.header.header)-1):
+                string1=string1+", "
+
+        for i in range(len(self.content)):
+            for ii in range(len(self.content[0])):
+                if(ii==0):
+                    string2=string2+"("
+                if(self.header.header[ii][1]=="string"):
+                    string2=string2+"'"+self.content[i][ii]+"'"
+                else:
+                    string2=string2+self.content[i][ii]
+
+                if(ii<len(self.content[0])-1):
+                    string2=string2+", "
+                elif(i<len(self.content)-1):
+                    string2=string2+"),"
+                else:
+                    string2=string2+")"
+        return f"""INSERT INTO {nameTable} ({string1}) VALUES {string2};"""
 
     """
     def makeCsv(tableau):
